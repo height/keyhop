@@ -50,6 +50,6 @@ keyhop status   # 查看当前状态
 keyhop quit     # 退出 KeyHop，已打开的 App 继续运行
 ```
 
-更新前先退出 KeyHop，再运行 `npm install -g keyhop@latest`；卸载使用 `npm uninstall -g keyhop`，个人配置会保留。原有 `proxy-launcher` 命令仍可使用。
+更新前先退出 KeyHop，再运行 `npm install -g keyhop@latest`；卸载使用 `npm uninstall -g keyhop`，个人配置会保留。
 
 随包提供的 App 使用 ad hoc 签名，尚未完成 Apple 公证。配置位置、源码构建与签名说明见 [开发指南](https://github.com/height/keyhop/blob/main/docs/development.md)，测试记录见 [本地验收](https://github.com/height/keyhop/blob/main/docs/verification.md)。

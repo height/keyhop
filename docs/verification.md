@@ -21,9 +21,9 @@ Swift 测试使用本地模拟代理端口，覆盖 HTTP / SOCKS5 协议差异�
 
 ```sh
 export KEYHOP_HOME=/tmp/keyhop-acceptance
-proxy-launcher
-proxy-launcher status --json
-proxy-launcher
+keyhop
+keyhop status --json
+keyhop
 ```
 
 验收项目：
@@ -36,7 +36,7 @@ proxy-launcher
 6. 使用交互式 CLI 测试终端输入、带空格路径和特殊字符参数；只打开 Terminal 时不能标记已启动。
 7. 开启代理后，启动或探测成功不表示 App 流量已验证；关闭时不会显示陈旧的代理可用结果。
 8. 修改或关闭代理后保留旧运行记录的原始配置；新的探测结果只属于新的代理配置。CLI `status --json` 在关闭时为 `proxyEnabled: false`、`proxy: null`。
-9. `proxy-launcher quit` 正常退出菜单栏，不结束任何目标 App；`status` 显示未运行。
+9. `keyhop quit` 正常退出菜单栏，不结束任何目标 App；`status` 显示未运行。
 10. 从本地 tarball 全局安装后，在无 Swift 构建步骤的情况下可启动；包不应依赖源码目录。
 
 不使用自动强退或自动重启日常 Codex / ChatGPT 来测试。当前本地构建只有 ad hoc 签名；尚未执行 npm 发布、Developer ID 签名或 Apple 公证。

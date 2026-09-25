@@ -13,7 +13,7 @@ enum KeyHopMain {
             exit(CLIHelper.run(requestID: arguments[2], store: store))
         }
         guard arguments.count == 1 else {
-            fputs("Unsupported KeyHop native arguments. Use proxy-launcher --help.\n", stderr)
+            fputs("Unsupported KeyHop native arguments. Use keyhop --help.\n", stderr)
             exit(2)
         }
         let app = NSApplication.shared

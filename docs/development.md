@@ -9,11 +9,11 @@
 ```sh
 npm run build:mac          # 构建 Apple Silicon + Intel 通用 App
 npm pack                  # 验证通用 App 并生成本地 npm 包
-npm install -g ./keyhop-0.1.0.tgz
+npm install -g ./keyhop-0.1.1.tgz
 keyhop
 ```
 
-`keyhop` 与 `proxy-launcher` 是等价命令。npm 包携带预构建的 App，安装或日常运行不需要 Swift，可直接通过 `npm install -g keyhop` 安装。
+npm 包携带预构建的 App，安装或日常运行不需要 Swift，可直接通过 `npm install -g keyhop` 安装。
 
 随包 App 使用 ad hoc 签名，尚未使用 Developer ID 签名或经过 Apple 公证，因此不具备 Apple 对开发者身份及公证结果的验证。构建脚本会校验签名完整性，但这不等同于公证；后续正式签名需要 Apple Developer 账号及相应证书。
 
@@ -90,7 +90,7 @@ npm run check
 npm test                   # Node CLI、进程身份与旧状态测试
 npm run test:mac            # Swift 配置、启动及真实 socket 协议测试
 npm run test:hotkeys        # 当前 macOS 桌面会话中的全局热键注册、冲突与事件测试
-npm run test:package        # 临时全局安装验收，生成 dist/keyhop-0.1.0.tgz
+npm run test:package        # 临时全局安装验收，生成 dist/keyhop-0.1.1.tgz
 python3 apps/macos/Tests/cli_pty_integration.py dist/KeyHop.app/Contents/MacOS/KeyHopMenu
 ```
 

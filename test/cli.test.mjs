@@ -50,7 +50,7 @@ test('CLI command grammar rejects trailing and unknown arguments', () => {
 test('help and version work on unsupported platforms without inspecting bundle', async (t) => {
   const f = fixture(t);
   assert.equal(await runCLI(['--help'], { ...f.options, platform: 'linux' }), 0);
-  assert.match(f.out[0], /proxy-launcher status --json/);
+  assert.match(f.out[0], /keyhop status --json/);
   assert.equal(await runCLI(['--version'], { ...f.options, platform: 'win32' }), 0);
   assert.match(f.out[1], /^\d+\.\d+\.\d+/);
 });
@@ -60,6 +60,7 @@ test('unsupported platform and unknown arguments return actionable errors', asyn
   assert.equal(await runCLI([], { ...f.options, platform: 'linux' }), 1);
   assert.match(f.err[0], /macOS/);
   assert.equal(await runCLI(['start', '--bad'], f.options), 2);
+  assert.match(f.err[1], /keyhop --help/);
 });
 
 test('status and quit require no installed bundle, no build, no process launch', async (t) => {

@@ -1,6 +1,6 @@
 {
   "name": "keyhop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "KeyHop: a macOS menu bar app launcher with global shortcuts and optional proxy settings.",
   "repository": {
     "type": "git",
@@ -17,8 +17,7 @@
   },
   "type": "module",
   "bin": {
-    "keyhop": "bin/keyhop.mjs",
-    "proxy-launcher": "bin/keyhop.mjs"
+    "keyhop": "bin/keyhop.mjs"
   },
   "scripts": {
     "build:mac": "bash scripts/build-macos.sh",

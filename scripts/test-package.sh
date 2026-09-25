@@ -10,10 +10,10 @@ VERSION="$(node -p 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8
 ARCHIVE="$ROOT/dist/keyhop-$VERSION.tgz"
 npm install --global --prefix "$SMOKE/install" --cache "$SMOKE/npm-cache" --offline --ignore-scripts --no-audit --no-fund "$ARCHIVE"
 export KEYHOP_HOME="$SMOKE/config"
-[[ "$("$SMOKE/install/bin/proxy-launcher" --version)" == "$VERSION" ]]
 [[ "$("$SMOKE/install/bin/keyhop" --version)" == "$VERSION" ]]
-"$SMOKE/install/bin/proxy-launcher" --help > "$SMOKE/help.txt"
-"$SMOKE/install/bin/proxy-launcher" status --json > "$SMOKE/status.json"
+[[ ! -e "$SMOKE/install/bin/proxy-launcher" && ! -L "$SMOKE/install/bin/proxy-launcher" ]]
+"$SMOKE/install/bin/keyhop" --help > "$SMOKE/help.txt"
+"$SMOKE/install/bin/keyhop" status --json > "$SMOKE/status.json"
 node --input-type=module - "$SMOKE/status.json" <<'NODE'
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -24,4 +24,4 @@ assert.equal(status.config, null);
 NODE
 /usr/bin/codesign --verify --strict "$SMOKE/install/lib/node_modules/keyhop/dist/KeyHop.app"
 echo "Local archive verified: $ARCHIVE"
-echo "Temporary npm installation and both CLI aliases passed; no real global installation or npm publishing performed."
+echo "Temporary npm installation verified with keyhop as the only command; no real global installation or npm publishing performed."
