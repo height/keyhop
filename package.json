@@ -1,0 +1,20 @@
+{
+  "name": "keyhop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Launch and switch macOS apps with per-app proxy profiles.",
+  "type": "module",
+  "bin": {
+    "keyhop": "bin/keyhop.mjs"
+  },
+  "scripts": {
+    "build:mac": "bash scripts/build-macos.sh",
+    "check": "node --check bin/keyhop.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "os": [
+    "darwin"
+  ]
+}
