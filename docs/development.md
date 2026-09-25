@@ -1,6 +1,6 @@
 # KeyHop 开发指南
 
-日常使用与本地安装见 [README](../README.md)。本页记录配置、验证与分发细节。
+日常使用与 npm 安装见 [README](../README.md)。本页记录源码构建、配置、验证与分发细节。
 
 ## 环境与构建
 
@@ -13,7 +13,9 @@ npm install -g ./keyhop-0.1.0.tgz
 keyhop
 ```
 
-`keyhop` 与 `proxy-launcher` 是等价命令。npm 包携带预构建的 App，安装或日常运行不需要 Swift。当前 `package.json` 保留 `private: true`，尚未发布 npm。本地产物使用 ad hoc 签名，尚未使用 Developer ID 签名或经过 Apple 公证；跨电脑分发前需完成相应准备。
+`keyhop` 与 `proxy-launcher` 是等价命令。npm 包携带预构建的 App，安装或日常运行不需要 Swift，可直接通过 `npm install -g keyhop` 安装。
+
+随包 App 使用 ad hoc 签名，尚未使用 Developer ID 签名或经过 Apple 公证，因此不具备 Apple 对开发者身份及公证结果的验证。构建脚本会校验签名完整性，但这不等同于公证；后续正式签名需要 Apple Developer 账号及相应证书。
 
 ## 配置与状态
 
@@ -51,7 +53,7 @@ keyhop --help
 
 ```sh
 keyhop quit
-npm install -g ./keyhop-0.1.0.tgz
+npm install -g keyhop@latest
 # 或卸载：npm uninstall -g keyhop
 ```
 

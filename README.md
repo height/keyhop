@@ -4,7 +4,7 @@ KeyHop 是一款 macOS 应用启动工具。你可以把常用应用放进菜单
 
 应用已经运行时，KeyHop 会将它切到前台，保留当前窗口和工作内容。需要代理时，可以在设置中手动开启。
 
-![KeyHop 主界面：应用列表、自定义快捷键与默认关闭的代理开关](docs/images/keyhop-overview.jpg)
+![KeyHop 主界面：应用列表、自定义快捷键与默认关闭的代理开关](https://raw.githubusercontent.com/height/keyhop/main/docs/images/keyhop-overview.jpg)
 
 *应用列表与快捷键设置。图中的 F1、F2 为手动绑定，首次使用不会预设快捷键。*
 
@@ -22,12 +22,10 @@ KeyHop 适合需要经常在几个应用之间切换的场景，例如 Codex、�
 
 ## 安装
 
-需要 **macOS 13+、Node.js 20+**。当前尚未发布 npm，可在项目目录构建并本地安装；构建需要 Swift 6 / Xcode Command Line Tools。
+需要 **macOS 13+、Node.js 20+**。
 
 ```sh
-npm run build:mac
-npm pack
-npm install -g ./keyhop-0.1.0.tgz
+npm install -g keyhop
 keyhop
 ```
 
@@ -37,13 +35,13 @@ keyhop
 
 代理默认关闭，正常使用 KeyHop 不需要配置代理。有需要时，在设置中开启「使用代理」，填写已有代理软件的地址，例如 `127.0.0.1:7897`，并选择对应的 HTTP 或 SOCKS5 协议。应用的代理启动方式由 KeyHop 自动判断。
 
-![KeyHop 可选的代理设置，开启后显示协议、地址与连接状态](docs/images/keyhop-proxy.jpg)
+![KeyHop 可选的代理设置，开启后显示协议、地址与连接状态](https://raw.githubusercontent.com/height/keyhop/main/docs/images/keyhop-proxy.jpg)
 
 *开启代理后的设置界面。关闭开关后，连接设置会收起。*
 
 开启后，KeyHop 会在启动应用前检查代理；检查失败时会提示原因，并停止本次启动。开关和地址的变更只影响之后通过 KeyHop 新启动的应用。对于已经运行的应用，点击或按快捷键仍然只是切到前台；要应用新的代理设置，需要先保存工作、退出应用，再通过 KeyHop 打开。
 
-KeyHop 使用已有的代理服务，不修改系统代理。应用是否采用代理配置，取决于它自身的网络实现，因此代理检查通过不代表该应用的全部流量都经过代理。具体说明见 [产品说明](docs/product.md)。
+KeyHop 使用已有的代理服务，不修改系统代理。应用是否采用代理配置，取决于它自身的网络实现，因此代理检查通过不代表该应用的全部流量都经过代理。具体说明见 [产品说明](https://github.com/height/keyhop/blob/main/docs/product.md)。
 
 ## 命令与维护
 
@@ -52,6 +50,6 @@ keyhop status   # 查看当前状态
 keyhop quit     # 退出 KeyHop，已打开的 App 继续运行
 ```
 
-更新前先退出 KeyHop，再用 `npm install -g ./keyhop-0.1.0.tgz` 安装新的本地包；卸载使用 `npm uninstall -g keyhop`，个人配置会保留。原有 `proxy-launcher` 命令仍可使用。
+更新前先退出 KeyHop，再运行 `npm install -g keyhop@latest`；卸载使用 `npm uninstall -g keyhop`，个人配置会保留。原有 `proxy-launcher` 命令仍可使用。
 
-当前版本用于本地构建与安装，尚未完成 Apple 公证。配置位置、开发命令和分发准备见 [开发指南](docs/development.md)，测试记录见 [本地验收](docs/verification.md)。
+随包提供的 App 使用 ad hoc 签名，尚未完成 Apple 公证。配置位置、源码构建与签名说明见 [开发指南](https://github.com/height/keyhop/blob/main/docs/development.md)，测试记录见 [本地验收](https://github.com/height/keyhop/blob/main/docs/verification.md)。
