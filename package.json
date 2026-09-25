@@ -2,19 +2,26 @@
   "name": "keyhop",
   "version": "0.1.0",
   "private": true,
-  "description": "Launch and switch macOS apps with per-app proxy profiles.",
+  "description": "KeyHop: a macOS menu bar app launcher with global shortcuts and optional proxy settings.",
   "type": "module",
   "bin": {
-    "keyhop": "bin/keyhop.mjs"
+    "keyhop": "bin/keyhop.mjs",
+    "proxy-launcher": "bin/keyhop.mjs"
   },
   "scripts": {
     "build:mac": "bash scripts/build-macos.sh",
-    "check": "node --check bin/keyhop.mjs"
+    "build:mac:native": "bash scripts/build-macos.sh --native",
+    "check": "node --check bin/keyhop.mjs && node --check lib/cli.mjs && node --check scripts/verify-package.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:mac": "bash scripts/test-macos.sh",
+    "test:hotkeys": "bash scripts/test-hotkeys.sh",
+    "test:package": "bash scripts/test-package.sh",
+    "prepack": "node scripts/verify-package.mjs"
   },
+  "files": ["bin/", "lib/", "dist/KeyHop.app/", "dist/build-info.json", "README.md", "docs/"],
   "engines": {
     "node": ">=20"
   },
-  "os": [
-    "darwin"
-  ]
+  "os": ["darwin"],
+  "cpu": ["arm64", "x64"]
 }

@@ -1,36 +1,41 @@
-# KeyHop product brief
+# KeyHop 第一版产品说明
 
-## Purpose
+## 定位
 
-KeyHop is a personal macOS menu bar launcher. It starts selected apps with a user's existing local proxy, such as `127.0.0.1:7897`, and provides a configurable keyboard shortcut for quickly opening or switching between apps. KeyHop does not provide a proxy server or change the system-wide proxy.
+KeyHop 是 macOS 应用启动器。全局 npm 包携带原生菜单栏 App，运行 `keyhop` 后，从菜单栏或每个 App 绑定的全局快捷键打开目标 App。代理默认关闭，需要时由用户手动开启；代理服务由已有的软件提供，KeyHop 不修改系统代理、不提供代理服务器。`proxy-launcher` 作为兼容命令保留。
 
-## Distribution and entry points
+第一版范围以本说明为准：代理配置、应用启动配置、全局快捷键、运行中保护、可核实的状态、CLI 管理。可搜索切换器不属于这一版。
 
-- Install the CLI globally with `npm install -g <package>`.
-- Run `keyhop` to show the menu bar app. Running it again should activate the same instance.
-- The menu bar is the primary daily entry point. A global hotkey opens a searchable app switcher.
-- F3 may be selected as a hotkey, but it is used for Mission Control on many Macs. Detect and explain shortcut conflicts rather than silently overriding them.
+## 组成
 
-## App launch flow
+- Node.js CLI：`start`、`status`、`status --json`、`quit`；校验进程身份后激活或退出已有菜单栏实例。
+- Swift / AppKit 菜单栏：单实例文件锁、应用快捷菜单和精简设置窗口；每行应用包含运行状态、打开与快捷键录制。代理开关和详细配置按需打开，菜单栏「添加新应用」可打开设置窗口。
+- 全局快捷键：Carbon `RegisterEventHotKey` 注册明确的组合键，无需辅助功能权限；录制时暂停注册，只在 KeyHop 当前窗口内读取本次按键。
+- KeyHopCore：版本化 Codable 配置、原子写入、独立 HTTP / SOCKS5 握手探测、GUI 启动、交互式 CLI 请求与回执。
+- npm 分发：预构建的 macOS 13+ arm64 / x86_64 通用 App，无安装后编译步骤。当前保留 private 标记，未发布。
 
-1. Configure the local proxy address and its actual protocol (HTTP or SOCKS5).
-2. Add an app and choose its supported launch method.
-3. Check that the proxy endpoint is reachable before a proxied launch.
-4. If the app is not running, start it with its saved proxy configuration.
-5. If the app is already running, show its current state and offer to bring it forward or restart it with proxy settings. Never force-quit it without the user's action.
+## 配置和启动语义
 
-Codex CLI can be launched with proxy environment variables. GUI apps may support environment variables, command-line arguments such as Chromium's `--proxy-server`, or both. Each app profile must record the method actually supported by that app. Local and intranet destinations may require direct-connection rules.
+一份代理配置包含 `enabled` 开关、协议、主机、端口和直连列表。新配置默认关闭，旧 JSON 缺少 `proxy.enabled` 时也关闭；保存的地址不代表已开启。每个应用保存路径、类型、参数及可选快捷键，代理启动方式由 KeyHop 自动选择，不在界面中暴露。额外参数按逐行 argv 保存，不进行 shell 求值。
 
-## Status and trust
+关闭代理时，未运行的应用可直接启动，不探测代理、不注入代理配置。开启后，CLI 使用代理环境变量，自动识别的 Chromium / Electron GUI App 同时使用对应参数，其他 GUI App 使用环境变量。HTTP 与 SOCKS5 不互相回退；两者都向代理请求建立到 `example.com:443` 的隧道，只记录协议握手证据，不把它称为目标应用流量验证。此探测不发送业务凭据或 App 数据。开启代理但代理不可用时不启动目标进程。
 
-Show three distinct facts: whether the local proxy is reachable, whether an app was launched with its saved proxy configuration, and whether its traffic has been verified through the proxy. Do not describe a configured or launched app as "fully proxied" without traffic evidence. Environment variables and launch arguments cannot guarantee that every request from an arbitrary app uses the proxy.
+菜单与快捷键共用唤起流程：GUI 根据 bundle ID 和路径检查运行状态，已运行时切到前台并保留原网络设置；未运行时根据代理开关决定是否检查和传入代理配置，启动前再次确认运行状态。不会退出、重启或修改既有实例。已有 CLI 实例维持原有保护，提示用户查看终端。
 
-## First release scope
+快捷键配置兼容旧版本 JSON，默认不注册任何组合。普通按键必须带 ⌘、⌃ 或 ⌥，功能键可单独绑定。同一配置的重复组合不允许保存；启用的 macOS 系统快捷键通过 `CopySymbolicHotKeys` 检查，再尝试独占注册，失败时显示错误并保留原绑定。其他 App 的所有本地菜单快捷键无法完整枚举。录制失焦、关闭窗口或按 Esc 时恢复已有注册；长按只触发一次，退出启动器释放注册。
 
-- A single-instance menu bar app, launched by the globally installed CLI.
-- Per-app profiles for proxy address, protocol, launch method, and direct-connection rules.
-- Menu actions to open or switch supported apps.
-- Configurable global hotkey and searchable switcher.
-- Proxy reachability and honest per-app status.
+CLI 在 Terminal 中运行。菜单栏写入不可变请求，通过受限权限的 `.command` 启动辅助入口。辅助入口检查已有进程，代理开启时再次检查代理，只有目标进程成功创建后才写入启动回执。打开 Terminal 本身只是 requested 状态。请求领取与进程锁防止同一请求或同一路径的并发重复启动。
 
-System-level traffic interception and per-app VPN routing are outside the first release.
+## 状态
+
+- **代理服务**：未开启、未检查、探测通过、不可用、检查已过期。关闭时不展示旧检查为当前状态；可用状态是时间点证据，不是持续保证。
+- **启动状态**：等待 Terminal、已按配置创建进程、已切到前台且原代理状态不变、已有 CLI 实例、代理不可用而未启动、启动失败、进程已退出。
+- **App 流量**：未验证。第一版不提供一个无证据的“已验证”开关。
+
+记录保留该次代理快照，直接启动则不产生代理成功记录。开启、关闭或修改代理后，旧记录不会被归属于新配置；运行中 App 需要用户退出后重新启动。日常界面不提供启动历史入口，CLI 状态仍保留诊断记录。
+
+## 边界
+
+环境变量和 Chromium 参数只对采用这些设置的组件有效。原生 ChatGPT 或其他 App 可能忽略环境变量；Electron 的其他子进程也可能使用独立网络栈。CLI 运行进程检测存在包装器、改名等边界。KeyHop 不宣称完全代理。
+
+第一版不包含代理认证、系统强制分流、VPN / Network Extension、流量接管、全量审计和开机启动。后续能力需要独立设计。

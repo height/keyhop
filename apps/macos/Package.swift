@@ -5,5 +5,9 @@ let package = Package(
     name: "KeyHopMenu",
     platforms: [.macOS(.v13)],
     products: [.executable(name: "KeyHopMenu", targets: ["KeyHopMenu"])],
-    targets: [.executableTarget(name: "KeyHopMenu")]
+    targets: [
+        .target(name: "KeyHopCore"),
+        .executableTarget(name: "KeyHopMenu", dependencies: ["KeyHopCore"]),
+        .testTarget(name: "KeyHopCoreTests", dependencies: ["KeyHopCore"])
+    ]
 )
